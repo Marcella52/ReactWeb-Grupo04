@@ -1,152 +1,213 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect, useContext } from "react";
+import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
+import { CredenciaisContext } from '../../context/credenciais';
+
+import api from "../../service/api";
 
 import "./style.css"
 
-// // const handleDados(e) => {
-//   // Pegando o CEP
-//   const cep = e.target.value;
-//   // Consultando a API
-//   ApiCep.SearchCep(cep).then((res) => {
-//     let rua       = res.data.logradouro;
-//     let bairro    = res.data.bairro;
-//     let cidade    = res.data.localidade;
-//     let estado    = res.data.uf;
-//     // Mudando o estado
-//     this.setState({
-//       rua: rua,
-//      bairro: bairro,
-//      cidade: cidade,
-//      estado: estado
-//     })
-//   })
-// ;
+function FormularioUsuario() {
+  const [nome, setNome] = useState('');
+  const [sobrenome, setSobrenome] = useState('');
+  const [telefone1, setTelefone1] = useState('');
+  const [telefone2, settelefone2] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [dataNascimento, setDataNascimento] = useState('');
+  const [email, setEmail] = useState('');
+  const [nomeUsuario, setNomeUsuario] = useState('');
+  const [senha, setSenha] = useState('');
+  const [cep, setCep] = useState('');
+  const [rua, setRua] = useState('');   
+  const [bairro, setBairro] = useState('');
+  const [numero, setNumero] = useState('');
+  const [complemento, setComplemento] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [estado, setEstado] = useState('');
+  const { credenciais } = useContext(CredenciaisContext);
+  const history = useHistory();
 
-// constructor() 
-//   super()
+  function cadastrarUsuario() {
+    let formData = new FormData();
 
-//   this.state = {
-//       rua: 'Rua...'
-//     , bairro: 'Bairro...'
-//     , cidade: 'Cidade...'
-//     , estado: 'Estado'
-//   }
+    const usuario = {
+      nome: nome,
+      sobrenome: sobrenome,
+      telefone1: telefone1,
+      telefone2: telefone2,
+      cpf: cpf,
+      dataNascimento: datanascimento,
+      email: email,
+      nomeusuario: usuario,
+      senha: senha,
+      cep: cep,
+      rua: rua,  
+      bairro: bairro,
+      numero: numero,
+      complemento: complemento,
+      cidade: cidade,
+      estado: estado
+    } 
 
-// const ApiCep = {
-//   SearchCep(cep) {
-//     return axios.get(`https://viacep.com.br/ws/${cep}/json`);
-//   }
-// };
+    formData.append('usuario', JSON.stringify(usuario));
 
-const validate = values => {
-  const errors = {};
-  if (!values.nome) {
-    errors.nome = 'Nome não pode ficar em branco. O campo deve ser preenchido!';
-  } else if (values.produto.length < 4) {
-    errors.nome = 'Nome muito curto.';
-  } else if (values.produto.length > 40) {
-    errors.nome = 'Nome muito grande.';
+    api
+      .post(`api/v1/usuarios`, formData, {
+        headers: {
+          "Content-Type": `multipart/form-data; boundary=${formData._boundary}`
+        },
+        auth: {
+          username: credenciais.login,
+          password: credenciais.senha
+        },
+        data: '[form]'
+      })
+      .then((response) => {
+        if (response.status === 201) {
+          alert("Usuario cadastrado com sucesso");
+          limpaEstados();
+        }
+      })
+      .catch((error) => {
+        if(error?.response?.data.titulo === 'Usuario já existe no sistema'){
+          alert("Usuário já possui cadastro!");
+        }
+      });
   }
 
-
-  if (!values.sobreNome) {
-    errors.sobreNome = 'O sobrenome não pode ficar em branco. O campo deve ser preenchido!';
+  function limpaEstados() {
+    setNome('');
+    setSobrenome('');
+    setTelefone1('');
+    settelefone2('');
+    setCpf('');
+    setDataNascimento('');
+    setEmail('');
+    setNomeUsuario('');
+    setSenha('');
+    setCep('');
+    setRua('');   
+    setBairro('');
+    setNumero('');
+    setComplemento('');
+    setCidade('');
+    setEstado('');
   }
 
-  if (!values.telefone1) {
-    errors.telefone1 = 'O telefone principal não pode ficar em branco. O campo deve ser preenchido!';
+  function handleSetNome(e) {
+    setNome(e.target.value);
   }
 
-  if (!values.cpf) {
-    errors.cpf = 'O CPF não pode ficar em branco. O campo deve ser preenchido!';
+  function handleSetSobrenome(e) {
+    setSobrenome(e.target.value);
   }
 
+  function handleSetTelefone1(e) {
+    setTelefone1(e.target.value);
+  }
 
-  var dataAtual = new Date();
-  var data = new Date(values.dataNascimento);
+  function handleSetTelefone2(e) {
+    setTelefone2(e.target.value);
+  }
 
-  if (!values.dataNascimento) {
-    errors.dataNascimento = 'A data não pode ficar em branco ou ser uma data futura.';
-  } else if (data > dataAtual) {
-    errors.dataNascimento = "Data inválida, data de nascimento não pode estar no futuro!";
+  function handleSetCpf(e) {
+    setCpf(e.target.value);
+  }
+
+  function handleSetDataNascimento(e) {
+    console.log(e.target.value)
+    setDataNascimento(e.target.value);
+  }
+  function handleSetEmail(e) {
+    setEmail(e.target.value);
+  }
+
+  function handleSetCpf(e) {
+    setCpf(e.target.value);
   }
   
-
-  if (!values.email) {
-    errors.email = 'O endereço de email não pode ficar em branco. O campo deve ser preenchido!';
-    ;
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-    errors.email = "Email invalido";
+  function handleSetNomeUsuario(e) {
+    setNomeUsuario(e.target.value);
   }
 
-
-
-  if (!values.nomeUsuario) {
-    errors.nomeUsuario = 'Nome de usuário não pode ficar em branco. O campo deve ser preenchido!';
-  } else if (values.nomeUsuario.length < 4) {
-    errors.nomeUsuario = 'Nome de usuário muito curto.';
-  } else if (values.nomeUsuario.length > 40) {
-    errors.nomeUsuario = 'Nome de usuário muito grande.';
+  function handleSetSenha(e) {
+    setSenha(e.target.value);
   }
 
-  if (!values.senha) {
-    errors.senha = 'A senha não pode ficar em branco. O campo deve ser preenchido!';
-  } else if (values.senha.length < 8) {
-    errors.senha = 'Senha muito curta.';
-  } else if (values.senha.length > 40) {
-    errors.senha = 'Senha muito grande.';
+  function handleSetCep(e) {
+    setCep(e.target.value);
   }
 
-  if (!values.cep) {
-    errors.cep = 'O CEP não pode ficar em branco. O campo deve ser preenchido!';
-  } 
-
-
-
-  if (!values.rua) {
-    errors.rua = 'A rua não pode ficar em branco. O campo deve ser preenchido!';
+  function handleSetRua(e) {
+    setRua(e.target.value);
   }
 
-  if (!values.numero) {
-    errors.numero = 'O numero não pode ficar em branco. O campo deve ser preenchido!';
+  function handleSetBairro(e) {
+    setBairro(e.target.value);
   }
 
-  return errors;
-};
+  function handleSetNumero(e) {
+    setNumero(e.target.value);
+  }
+
+  function handleSetComplemento(e) {
+    setComplemento(e.target.value);
+  }
+
+  function handleSetCidade(e) {
+    setCidade(e.target.value);
+  }
+
+  function handleSetEstado(e) {
+    setEstado(e.target.value);
+  }
+
+  useEffect(() => {
+    if (credenciais.login === undefined && credenciais.senha === undefined) {
+      return;
+    }
+    if(credenciais.login === null && credenciais.senha === null) {
+      
+      history.push('/login');
+    }
+}, [credenciais]);
+
+const formik = useFormik({
+  initialValues: {
+      nome: '',
+      sobreNome: '',
+      telefone1: '',
+      telefone2: '',
+      cpf: '',
+      dataNascimento: '',
+      email: '',
+      nomeUsuario: '',
+      senha: '',
+      cep: '',
+      rua: '',
+      bairro: '',
+      numero: '',
+      complemento: '',
+      cidade: '',
+      estado: '',
+
+  },
 
 
-function FormularioUsuario({ nome, setNome, sobrenome, setsobrenome,  telefone1, settelefone1, telefone2, cpf, setcpf, dataNascimento, setdataNascimento, email, setemail, nomeUsuario, setnomeUsuario, senha, setsenha, cep, setcep, rua, setrua, bairro, setbairro, numero, setnumero, complemento, setcomplemento, cidade, setcidade, estado, setestado, salvarRegistro }) {
+validationSchema: Yup.object({
+  nome: Yup.string().min(4, 'Nome deve conter no mínimo 4 caracteres').max(40, 'Nome deve conter no máximo 40 caracteres').required('Nome não pode ficar em branco. O campo deve ser preenchido!'),
+  sobrenome: Yup.string().min(4, 'Sobrenome deve conter no mínimo 4 caracteres').max(40, 'Sobrenome deve conter no máximo 40 caracteres').required('Sobrenome não pode ficar em branco. O campo deve ser preenchido!'),
 
+  telefone1: Yup.string().required('O Telefone Principal não pode ficar em branco. O campo deve ser preenchido!'),
+  cep: Yup.string().required('CEP não pode ficar em branco. O campo deve ser preenchido!'),
+  datanascimento: Yup.date().max(new Date(), 'Data de nascimento não pode estar no futuro!').required('Data de nascimento não pode ficar em branco. O campo deve ser preenchido!'),
+  cpf: Yup.string().required('CPF não pode ficar em branco. O campo deve ser preenchido!'),
+  numero: Yup.string().required('Numero não pode ficar em branco. O campo deve ser preenchido!'),
 
-  const formik = useFormik({
-    initialValues: {
-        nome: '',
-        sobreNome: '',
-        telefone1: '',
-        telefone2: '',
-        cpf: '',
-        dataNascimento: '',
-        email: '',
-        nomeUsuario: '',
-        senha: '',
-        cep: '',
-        rua: '',
-        bairro: '',
-        numero: '',
-        complemento: '',
-        cidade: '',
-        estado: '',
- 
-    },
-
-    validate,
-    onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
-    },
-  });
-
+})
+});
 
   return (
     <main><h1>Cadastro de Usuário</h1>
@@ -349,7 +410,7 @@ function FormularioUsuario({ nome, setNome, sobrenome, setsobrenome,  telefone1,
         {formik.touched.bairro && formik.errors.bairro ? <div class="error">{formik.errors.bairro}</div> : null}
 
         <div id="div-meio">
-          <div class="esquerda">
+          <div class="esquerda-numero">
             <label htmlFor="numero">Número <spam id="alerta">*</spam></label>
             <input
               id="numero"
@@ -362,7 +423,7 @@ function FormularioUsuario({ nome, setNome, sobrenome, setsobrenome,  telefone1,
             {formik.touched.numero && formik.errors.numero ? <div class="error">{formik.errors.numero}</div> : null}
 
           </div>
-          <div class="direita">
+          <div class="direita-complemento">
             <label htmlFor="complemento">Complemento </label>
             <input
               id="complemento"
@@ -377,7 +438,7 @@ function FormularioUsuario({ nome, setNome, sobrenome, setsobrenome,  telefone1,
         </div>
 
         <div id="div-meio">
-          <div class="esquerda">
+          <div class="esquerda-cidade">
             <label htmlFor="cidade">Cidade <spam id="alerta">*</spam></label>
             <input
               id="cidade"
@@ -390,7 +451,7 @@ function FormularioUsuario({ nome, setNome, sobrenome, setsobrenome,  telefone1,
             {formik.touched.cidade && formik.errors.cidade ? <div class="error">{formik.errors.cidade}</div> : null}
 
           </div>
-          <div class="direita">
+          <div class="direita-uf">
             <label htmlFor="uf">Estado <spam id="alerta">*</spam></label>
             <input
               id="uf"
@@ -404,19 +465,19 @@ function FormularioUsuario({ nome, setNome, sobrenome, setsobrenome,  telefone1,
             {formik.touched.uf && formik.errors.uf ? <div class="error">{formik.errors.uf}</div> : null}
          </div>
         </div>
-         <div className="checkbox">
+         <div className="checkboxDeclaracao">
             <input
                type="checkbox"
                placeholder="  Declaro que li e aceito os Termos de Uso"
                name="DeclaracaoCiente"
-               id="customCheck1"
+               id="checkboxDeclaracao"
              />
-             <label htmlFor="customCheck1">  Declaro que li e aceito os Termos de Uso</label>
+             <label htmlFor="labelCheckDeclaracao">  Declaro que li e aceito os Termos de Uso</label>
           </div>
          <input id="botao" type='submit' nome="enviar" value="CADASTRAR-SE" />
          <div className="linkentrada">
             <label htmlFor="linkentrada"> Ja tem cadastro? Entrar </label>
-          </div>
+         </div>
       </form >
     </main>
   );

@@ -45,11 +45,27 @@
 .direita {
   width: 50%;
 }
+
+.esquerda-numero {
+  width: 20%;
+  padding-right: 5%;
+}
+.direita-complemento {
+  width: 80%;
+}
+
+.esquerda-cidade {
+  width: 80%;
+  padding-right: 5%;
+}
+.direita-uf {
+  width: 20%;
+}
 .form-group-check-inline {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-between;
   flex-basis: 33%;
 }
 
@@ -79,15 +95,18 @@
   margin: 0;
 }
 
-.checkbox {
+.checkboxDeclaracao {
+  display: flex;
   flex-direction: row;
-  position: baseline-position;
-  align-items: left;
+  align-items: center;
+  vertical-align: middle;
+  width: 50%;
 }
 
 .linkentrada {
   display: flex;
   align-items: center;
+  width: 0%;
 }
 
 .CadastroUsuario input,
@@ -98,6 +117,13 @@ select {
   border-radius: 0.5rem;
   width: 100%;
   background-color: var(--cor-caixa-texto);
+}
+
+#div-meio {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
 }
 
 #botao {

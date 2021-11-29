@@ -549,7 +549,7 @@ function FormularioUsuario() {
         <div id="div-meio">
           <div className="esquerda-numero">
             <label htmlFor="numero">
-              Número <span id="alerta">*</span>
+              Nº <span id="alerta">*</span>
             </label>
             <input
               id="numero"

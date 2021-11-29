@@ -1,6 +1,4 @@
-.container-cadastro-usuario {
-  background-color: var(--cor-fundo-claro);
-  padding-top: calc(var(--tamanho-header) + 2rem);
+.container-atualizacao-usuario {
   padding-bottom: 2rem;
   padding-left: 5%;
   padding-right: 5%;
@@ -9,12 +7,12 @@
   font-size: var(--tamanho-fonte-forms);
 }
 
-.container-cadastro-usuario h1 {
+.container-atualizacao-usuario h1 {
   margin-bottom: 2rem;
   font-size: var(--tamanho-fonte-titulos);
 }
 
-.container-cadastro-usuario .CadastroUsuario {
+.container-atualizacao-usuario .CadastroUsuario {
   display: flex;
   margin: auto;
   flex-direction: column;
@@ -27,7 +25,7 @@
   color: var(--cor-texto-alerta);
 }
 
-.container-cadastro-usuario .error {
+.container-atualizacao-usuario .error {
   color: var(--cor-texto-alerta);
   font-style: italic;
 }
@@ -39,37 +37,37 @@
   justify-content: center;
 }
 
-.container-cadastro-usuario .esquerda {
+.container-atualizacao-usuario .esquerda {
   width: 50%;
   padding-right: 5%;
 }
-.container-cadastro-usuario .direita {
+.container-atualizacao-usuario .direita {
   width: 50%;
 }
 
-.container-cadastro-usuario .esquerda-numero {
+.container-atualizacao-usuario .esquerda-numero {
   width: 20%;
   padding-right: 5%;
 }
-.container-cadastro-usuario .direita-complemento {
+.container-atualizacao-usuario .direita-complemento {
   width: 80%;
 }
 
-.container-cadastro-usuario .esquerda-cidade {
+.container-atualizacao-usuario .esquerda-cidade {
   width: 80%;
   padding-right: 5%;
 }
-.container-cadastro-usuario .direita-uf {
+.container-atualizacao-usuario .direita-uf {
   width: 20%;
 }
-.container-cadastro-usuario .form-group-check-inline {
+.container-atualizacao-usuario .form-group-check-inline {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
 }
 
-.container-cadastro-usuario .form-check.form-check-inline {
+.container-atualizacao-usuario .form-check.form-check-inline {
   display: flex;
   flex-wrap: nowrap;
   flex-direction: row;
@@ -77,22 +75,27 @@
   gap: 1rem;
 }
 
-.container-cadastro-usuario .form-check.form-check-inline input {
+.container-atualizacao-usuario .form-check.form-check-inline input {
   width: 1rem;
   height: 1rem;
 }
 
-.container-cadastro-usuario .CadastroUsuario label {
+.container-atualizacao-usuario .CadastroUsuario label {
   text-align: left;
   display: flex;
   gap: 0.5rem;
+  white-space: nowrap;
 }
 
-.container-cadastro-usuario .form-check-label.radio-label {
+.container-atualizacao-usuario .CadastroUsuario .checkboxDeclaracao label {
+  white-space: normal;
+}
+
+.container-atualizacao-usuario .form-check-label.radio-label {
   margin: 0;
 }
 
-.container-cadastro-usuario .checkboxDeclaracao {
+.container-atualizacao-usuario .checkboxDeclaracao {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -105,25 +108,25 @@
   height: var(--tamanho-fonte-forms);
 }
 
-.container-cadastro-usuario .linkentrada {
+.container-atualizacao-usuario .linkentrada {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
 }
 
-.container-cadastro-usuario .linkentrada a {
+.container-atualizacao-usuario .linkentrada a {
   font-weight: 600;
   color: var(--cor-texto-destacado);
 
   transition: color .4s;
 }
 
-.container-cadastro-usuario .linkentrada a:hover {
+.container-atualizacao-usuario .linkentrada a:hover {
   color: var(--cor-texto-destacado-alternativo);
 }
 
-.container-cadastro-usuario .CadastroUsuario input,
+.container-atualizacao-usuario .CadastroUsuario input,
 select {
   font-size: var(--tamanho-fonte-forms);
   border: none;
@@ -140,6 +143,13 @@ select {
   justify-content: center;
 }
 
+.container-atualizacao-usuario .botoes-atualizacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
 #botao {
   display: flex;
   justify-content: center;
@@ -151,6 +161,10 @@ select {
   font-size: var(--tamanho-fonte-buttons);
 }
 
+.container-atualizacao-usuario .botoes-atualizacao .botao-deletar {
+  width: 100%;
+}
+
 @media only screen and (max-width: 790px) {
   #div-meio {
     display: flex;
@@ -158,19 +172,27 @@ select {
     gap: 1rem;
   }
 
-  .container-cadastro-usuario .esquerda,
-  .container-cadastro-usuario .direita,
-  .container-cadastro-usuario .esquerda-numero,
-  .container-cadastro-usuario .direita-complemento,
-  .container-cadastro-usuario .esquerda-cidade,
-  .container-cadastro-usuario .direita-uf {
+  .container-atualizacao-usuario .esquerda,
+  .container-atualizacao-usuario .direita,
+  .container-atualizacao-usuario .esquerda-numero,
+  .container-atualizacao-usuario .direita-complemento,
+  .container-atualizacao-usuario .esquerda-cidade,
+  .container-atualizacao-usuario .direita-uf {
     width: 100%;
     padding-right: 0;
   }
 }
 
+@media only screen and (max-width: 470px) {
+  .container-atualizacao-usuario .botoes-atualizacao {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+
 @media only screen and (max-width: 370px) {
-  .container-cadastro-usuario .form-group-check-inline {
+  .container-atualizacao-usuario .form-group-check-inline {
     flex-direction: column;
     gap: .5rem;
     align-items: flex-start;

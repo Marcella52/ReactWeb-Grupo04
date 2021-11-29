@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { CredenciaisContext } from "../../context/credenciais";
+import BotaoDeletar from "../BotaoDeletar";
 
 import api from "../../service/api";
 
@@ -19,7 +20,6 @@ function FormularioUsuarioMinhaConta() {
   const [dataNascimento, setDataNascimento] = useState("");
   const [email, setEmail] = useState("");
   const [nomeUsuario, setNomeUsuario] = useState("");
-  const [senha, setSenha] = useState("");
   const [cep, setCep] = useState("");
   const [rua, setRua] = useState("");
   const [bairro, setBairro] = useState("");
@@ -30,7 +30,7 @@ function FormularioUsuarioMinhaConta() {
   const { credenciais, credenciaisCarregadas } = useContext(CredenciaisContext);
   const history = useHistory();
   const [informacoes, setInformacoes] = useState({
-    cep: '',
+    cep: "",
     logradouro: "",
     complemento: "",
     bairro: "",
@@ -40,32 +40,72 @@ function FormularioUsuarioMinhaConta() {
     gia: "",
   });
 
+  useEffect(() => {
+    if (credenciaisCarregadas) {
+      prencherCampos();
+    }
+  }, [credenciaisCarregadas]);
+
+  async function prencherCampos() {
+    let usuario = await getUsuario();
+    setNome(usuario?.nome ?? "");
+    setSobrenome(usuario?.sobrenome ?? "");
+    setTelefone1(usuario?.telefonePrincipal ?? "");
+    setTelefone2(usuario?.telefoneSecundario ?? "");
+    setGenero(usuario?.sexo ?? "");
+    setCpf(usuario?.cpf ?? "");
+    setDataNascimento(usuario?.dataNascimento ?? "");
+    setEmail(usuario?.email ?? "");
+    setNomeUsuario(usuario?.nomeUsuario ?? "");
+    setCep(usuario?.endereco?.cep ?? "");
+    setRua(usuario?.endereco?.logradouro ?? "");
+    setBairro(usuario?.endereco?.bairro ?? "");
+    setNumero(usuario?.endereco?.numero ?? "");
+    setComplemento(usuario?.endereco?.complemento ?? "");
+    setCidade(usuario?.endereco?.cidade ?? "");
+    setEstado(usuario?.endereco?.estado ?? "");
+    formik.nome = usuario?.nome ?? "";
+  }
+
+  async function getUsuario() {
+    try {
+      const response = await api.get(`api/v1/usuarios`, {
+        auth: {
+          username: credenciais.login,
+          password: credenciais.senha,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return null;
+    }
+  }
+
   async function getInformacoes() {
-    if(cep === undefined || cep.length !== 8) {
+    if (cep === undefined || cep.length !== 8) {
       return;
     }
     try {
-      const response = await api.get("http://viacep.com.br/ws/" + cep + "/json/")
-      if(response?.data?.erro) {
+      const response = await api.get("http://viacep.com.br/ws/" + cep + "/json/");
+      if (response?.data?.erro) {
         alert("CEP não encontrado");
       }
       setInformacoes(response.data);
-      return(response.data)
-    }
-    catch (e) {
+      return response.data;
+    } catch (e) {
       console.log(2);
     }
-  };
+  }
 
   useEffect(async () => {
     console.log(cep);
     let informacoesTemp = await getInformacoes();
-    
-    setRua((informacoesTemp?.logradouro ?? ''));
-    setCidade((informacoesTemp?.localidade ?? ''));
-    setEstado((informacoesTemp?.uf ?? ''));
-    setBairro((informacoesTemp?.bairro ?? ''));
-    console.log('bateu aqui');
+
+    setRua(informacoesTemp?.logradouro ?? "");
+    setCidade(informacoesTemp?.localidade ?? "");
+    setEstado(informacoesTemp?.uf ?? "");
+    setBairro(informacoesTemp?.bairro ?? "");
+    console.log("bateu aqui");
   }, [cep]);
 
   function cadastrarUsuario(e) {
@@ -80,7 +120,6 @@ function FormularioUsuarioMinhaConta() {
       dataNascimento: dataNascimento,
       email: email,
       nomeUsuario: nomeUsuario,
-      senhaUsuario: senha,
       endereco: {
         cep: cep,
         logradouro: rua === "" ? null : rua,
@@ -95,22 +134,25 @@ function FormularioUsuarioMinhaConta() {
     console.log(usuario);
 
     api
-      .post(`api/v1/usuarios`, usuario, {
+      .put(`api/v1/usuarios`, usuario, {
         headers: {
           "Content-Type": "application/json",
         },
+        auth: {
+          username: credenciais.login,
+          password: credenciais.senha,
+        },
       })
       .then((response) => {
-        if (response.status === 201) {
-          alert("Usuario cadastrado com sucesso");
+        if (response.status === 200) {
+          alert("Usuario atualizado com sucesso");
           history.push("/");
         }
       })
       .catch((error) => {
         if (error?.response?.data.titulo === "Usuario já existe no sistema") {
           alert("Usuário já possui cadastro!");
-        }
-        else {
+        } else {
           alert(error?.response?.data.listaErros[0]);
         }
       });
@@ -149,10 +191,6 @@ function FormularioUsuarioMinhaConta() {
 
   function handleSetNomeUsuario(e) {
     setNomeUsuario(e.target.value);
-  }
-
-  function handleSetSenha(e) {
-    setSenha(e.target.value);
   }
 
   function handleSetCep(e) {
@@ -207,7 +245,6 @@ function FormularioUsuarioMinhaConta() {
       dataNascimento: "",
       email: "",
       nomeUsuario: "",
-      senha: "",
       cep: "",
       rua: "",
       bairro: "",
@@ -244,10 +281,6 @@ function FormularioUsuarioMinhaConta() {
         .email("Campo deve conter um email!")
         .required("Email não pode ficar em branco. O campo deve ser preenchido!"),
       nomeUsuario: Yup.string().required("Nome de usuário não pode ficar em branco. O campo deve ser preenchido!"),
-      senha: Yup.string()
-        .min(8, "Senha deve conter no mínimo 8 caracteres")
-        .max(35, "Senha deve conter no máximo 35 caracteres")
-        .required("Senha não pode ficar em branco. O campo deve ser preenchido!"),
       cep: Yup.string()
         .min(8, "CEP inválido")
         .max(8, "CEP inválido")
@@ -262,7 +295,7 @@ function FormularioUsuarioMinhaConta() {
   });
 
   return (
-    <main className="container-cadastro-usuario">
+    <main className="container-atualizacao-usuario">
       <h1>Cadastro de Usuário</h1>
       <form
         className="CadastroUsuario"
@@ -403,6 +436,7 @@ function FormularioUsuarioMinhaConta() {
               }}
               onBlur={formik.handleBlur}
               value={cpf}
+              readOnly={true}
               required
             />
             {formik.touched.cpf && formik.errors.cpf ? <div className="error">{formik.errors.cpf}</div> : null}
@@ -443,6 +477,7 @@ function FormularioUsuarioMinhaConta() {
             }}
             onBlur={formik.handleBlur}
             value={email}
+            readOnly={true}
             required
           />
           {formik.touched.email && formik.errors.email ? <div className="error">{formik.errors.email}</div> : null}
@@ -462,30 +497,12 @@ function FormularioUsuarioMinhaConta() {
             }}
             onBlur={formik.handleBlur}
             value={nomeUsuario}
+            readOnly={true}
             required
           />
           {formik.touched.nomeUsuario && formik.errors.nomeUsuario ? (
             <div className="error">{formik.errors.nomeUsuario}</div>
           ) : null}
-        </div>
-
-        <div id="div-linha">
-          <label htmlFor="senha">
-            Senha <span id="alerta">*</span>
-          </label>
-          <input
-            id="senha"
-            nome="senha"
-            type="password"
-            onChange={(e) => {
-              handleSetSenha(e);
-              formik.handleChange(e);
-            }}
-            onBlur={formik.handleBlur}
-            value={senha}
-            required
-          />
-          {formik.touched.senha && formik.errors.senha ? <div className="error">{formik.errors.senha}</div> : null}
         </div>
 
         <div id="div-linha">
@@ -549,7 +566,7 @@ function FormularioUsuarioMinhaConta() {
         <div id="div-meio">
           <div className="esquerda-numero">
             <label htmlFor="numero">
-              Número <span id="alerta">*</span>
+              Nº <span id="alerta">*</span>
             </label>
             <input
               id="numero"
@@ -623,21 +640,9 @@ function FormularioUsuarioMinhaConta() {
           </div>
         </div>
 
-        <div className="checkboxDeclaracao">
-          <input type="checkbox" name="checkboxDeclaracao" id="checkboxDeclaracao" required />
-          <label htmlFor="checkboxDeclaracao">Declaro que li e aceito os Termos de Uso</label>
-        </div>
-
-        <input
-          id="botao"
-          type="submit"
-          nome="enviar"
-          value="Cadastrar Usuário"
-          disabled={!(formik.isValid && formik.dirty)}
-        />
-
-        <div className="linkentrada">
-          <label htmlFor="linkentrada"> Ja tem cadastro? <Link to="/login">Entrar</Link></label>
+        <div className="botoes-atualizacao">
+          <input id="botao" type="submit" nome="enviar" value="Atualizar Usuário" />
+          <BotaoDeletar />
         </div>
       </form>
     </main>

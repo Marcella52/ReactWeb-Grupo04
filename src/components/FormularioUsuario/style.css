@@ -86,6 +86,11 @@
   text-align: left;
   display: flex;
   gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.container-atualizacao-usuario .CadastroUsuario .checkboxDeclaracao label {
+  white-space: normal;
 }
 
 .container-cadastro-usuario .form-check-label.radio-label {

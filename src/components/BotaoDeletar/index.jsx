@@ -36,7 +36,7 @@ function BotaoDeletar() {
     history.push("/");
   }
 
-  return <BotaoVermelho className="botao-deletar" onClick={deletarUsuario}>Deletar</BotaoVermelho>;
+  return <BotaoVermelho type="button" className="botao-deletar" onClick={deletarUsuario}>Deletar</BotaoVermelho>;
 }
 
 export default BotaoDeletar;

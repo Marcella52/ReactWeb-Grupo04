@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 
 import CardMinhaConta from "../../components/CardMinhaConta";
-import FormularioUsuario from "../../components/FormularioUsuario";
+import FormularioUsuarioMinhaConta from "../../components/FormularioUsuarioMinhaConta";
 import Vendas from "../../components/Vendas";
 import Compras from "../../components/Compras";
 import "./style.css";
@@ -98,7 +98,7 @@ function MinhaConta() {
         <div className="container-principal">
           {
             escolha === 1
-            ? <FormularioUsuario />
+            ? <FormularioUsuarioMinhaConta />
             : (
                 escolha === 2
               )

@@ -8,7 +8,7 @@ import { CredenciaisContext } from '../../context/credenciais';
 
 import api from '../../service/api';
 
-import "./style.css";
+import "./login.css";
 
 
 function FormularioLogin() {

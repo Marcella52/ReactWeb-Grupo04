@@ -30,16 +30,25 @@ function Compras() {
   }
 
   function calculaTotal(pedido) {
-      let total = pedido.fretePedido;
-        pedido.listaItemPedido.map((itemPedido) => {
-          total += itemPedido.precoUnitario * itemPedido.quantidade;
-        });
-      return total;
+    let total = pedido.fretePedido;
+    pedido.listaItemPedido.map((itemPedido) => {
+      total += itemPedido.precoUnitario * itemPedido.quantidade;
+    });
+    return total;
   }
-  
+
   function geraData(dataPedido) {
     let data = new Date(dataPedido);
-    let stringData = data.getDate() + "/" + data.getMonth() + "/" + data.getFullYear() + " " + data.getHours() + ":" + data.getMinutes();
+    let stringData =
+      data.getDate() +
+      "/" +
+      data.getMonth() +
+      "/" +
+      data.getFullYear() +
+      " " +
+      data.getHours() +
+      ":" +
+      data.getMinutes();
     return stringData;
   }
 
@@ -55,16 +64,18 @@ function Compras() {
       {compras.length === 0
         ? ""
         : compras.map((compra) => {
-            return (
-              <div key={compra.id}>
-                <div className="info-container">
-                  <p className="pedido">{compra.id}</p>
-                  <p className="data">{geraData(compra.dataPedido)}</p>
-                  <p className="valor">{calculaTotal(compra).toFixed(2)}</p>
+            if (compra.statusPedido === "FINALIZADO") {
+              return (
+                <div key={compra.id}>
+                  <div className="info-container">
+                    <p className="pedido">{compra.id}</p>
+                    <p className="data">{geraData(compra.dataPedido)}</p>
+                    <p className="valor">{calculaTotal(compra).toFixed(2)}</p>
+                  </div>
+                  <hr className="linha"></hr>
                 </div>
-                <hr className="linha"></hr>
-              </div>
-            );
+              );
+            }
           })}
     </section>
   );

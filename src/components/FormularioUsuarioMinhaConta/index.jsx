@@ -9,7 +9,7 @@ import api from "../../service/api";
 
 import "./style.css";
 
-function FormularioUsuario() {
+function FormularioUsuarioMinhaConta() {
   const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");
   const [telefone1, setTelefone1] = useState("");
@@ -644,4 +644,4 @@ function FormularioUsuario() {
   );
 }
 
-export default FormularioUsuario;
+export default FormularioUsuarioMinhaConta;

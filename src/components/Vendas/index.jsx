@@ -30,16 +30,25 @@ function Vendas() {
   }
 
   function calculaTotal(pedido) {
-      let total = pedido.fretePedido;
-        pedido.listaItemPedido.map((itemPedido) => {
-          total += itemPedido.precoUnitario * itemPedido.quantidade;
-        });
-      return total;
+    let total = pedido.fretePedido;
+    pedido.listaItemPedido.map((itemPedido) => {
+      total += itemPedido.precoUnitario * itemPedido.quantidade;
+    });
+    return total;
   }
-  
+
   function geraData(dataPedido) {
     let data = new Date(dataPedido);
-    let stringData = data.getDate() + "/" + data.getMonth() + "/" + data.getFullYear() + " " + data.getHours() + ":" + data.getMinutes();
+    let stringData =
+      data.getDate() +
+      "/" +
+      data.getMonth() +
+      "/" +
+      data.getFullYear() +
+      " " +
+      data.getHours() +
+      ":" +
+      data.getMinutes();
     return stringData;
   }
 
@@ -55,16 +64,18 @@ function Vendas() {
       {vendas.length === 0
         ? ""
         : vendas.map((venda) => {
-            return (
-              <div key={venda.id}>
-                <div className="info-container">
-                  <p className="pedido">{venda.id}</p>
-                  <p className="data">{geraData(venda.dataPedido)}</p>
-                  <p className="valor">{calculaTotal(venda).toFixed(2)}</p>
+            if (venda.statusPedido === "FINALIZADO") {
+              return (
+                <div key={venda.id}>
+                  <div className="info-container">
+                    <p className="pedido">{venda.id}</p>
+                    <p className="data">{geraData(venda.dataPedido)}</p>
+                    <p className="valor">{calculaTotal(venda).toFixed(2)}</p>
+                  </div>
+                  <hr className="linha"></hr>
                 </div>
-                <hr className="linha"></hr>
-              </div>
-            );
+              );
+            }
           })}
     </section>
   );

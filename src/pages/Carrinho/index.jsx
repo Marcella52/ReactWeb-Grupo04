@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
 import { CredenciaisContext } from "../../context/credenciais";
-import axios from "axios";
 import "./style.css";
 import api from "../../service/api";
 import { useHistory } from "react-router-dom";
@@ -26,12 +25,11 @@ function Carrinho() {
 
   const getInformacoes = (e) => {
     e.preventDefault();
-    console.log(cep);
     if(cep.length !== 8) {
       alert("CEP inválido");
       return;
     }
-    axios.get("http://viacep.com.br/ws/" + cep + "/json/").then((response) => {
+    api.get("http://viacep.com.br/ws/" + cep + "/json/").then((response) => {
       if(response?.data?.erro) {
         alert("CEP não encontrado");
       }
